@@ -1,3 +1,5 @@
+Add-Type -AssemblyName System.Drawing
+
 $gifFile = "GIFアニメをフルパスで指定";
 
 $gif = [System.Drawing.Image]::FromFile($gifFile);
