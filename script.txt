@@ -1,0 +1,24 @@
+$gifFile = "GIFアニメをフルパスで指定";
+
+$gif = [System.Drawing.Image]::FromFile($gifFile);
+
+$frameCount = $gif.GetFrameCount( [System.Drawing.Imaging.FrameDimension]::Time);
+
+$height = $frameCount * $gif.Height;
+$result = New-Object System.Drawing.Bitmap $gif.Width, $height;
+$graphics = [System.Drawing.Graphics]::FromImage($result);
+ 
+ for ($i = 0; $i -lt $frameCount; $i++){
+
+    $gif.SelectActiveFrame([System.Drawing.Imaging.FrameDimension]::Time, $i);
+    $graphics.DrawImage($gif, 0, $i * $gif.Height);
+}
+
+$gifDirectory = Split-Path $gifFile;
+$gifFilename = [IO.Path]::GetFileNameWithoutExtension($gifFile);
+
+$result.Save((Join-Path $gifDirectory "$gifFilename.png"), [System.Drawing.Imaging.ImageFormat]::Png);
+
+$graphics.Dispose();
+$result.Dispose();
+$gif.Dispose(); 
