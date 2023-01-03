@@ -10,7 +10,7 @@ $height = $frameCount * $gif.Height;
 $result = New-Object System.Drawing.Bitmap $gif.Width, $height;
 $graphics = [System.Drawing.Graphics]::FromImage($result);
  
- for ($i = 0; $i -lt $frameCount; $i++){
+for ($i = 0; $i -lt $frameCount; $i++){
 
     $gif.SelectActiveFrame([System.Drawing.Imaging.FrameDimension]::Time, $i);
     $graphics.DrawImage($gif, 0, $i * $gif.Height);
