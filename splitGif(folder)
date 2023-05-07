@@ -1,0 +1,30 @@
+Add-Type -AssemblyName System.Drawing
+
+$gifDirectory = "フォルダのフルパスを指定";
+
+$gifFiles = Get-ChildItem -Path $gifDirectory -Filter *.gif;
+
+foreach($gifFile in $gifFiles){
+
+    $gif = [System.Drawing.Image]::FromFile($gifFile.FullName);
+
+    $frameCount = $gif.GetFrameCount([System.Drawing.Imaging.FrameDimension]::Time);
+
+    $height = $frameCount * $gif.Height;
+    $result = New-Object System.Drawing.Bitmap $gif.Width, $height;
+    $graphics = [System.Drawing.Graphics]::FromImage($result);
+
+    for($i = 0; $i -lt $frameCount; $i++){
+
+        $gif.SelectActiveFrame([System.Drawing.Imaging.FrameDimension]::Time, $i);
+        $graphics.DrawImage($gif, 0, $i * $gif.Height);
+    }
+
+    $gifFilename = [IO.Path]::GetFileNameWithoutExtension($gifFile.Name);
+
+    $result.Save((Join-Path $gifDirectory "$gifFilename.png"), [System.Drawing.Imaging.ImageFormat]::Png);
+
+    $graphics.Dispose();
+    $result.Dispose();
+    $gif.Dispose();
+}
